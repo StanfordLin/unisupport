@@ -165,10 +165,11 @@ class ShelterOfferScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = { text: 'Placeholder' };
+    this.address = { text: 'Address' };
   }
 
     storeRequest = type => {
-      firebase.database().ref('offer' + int).set({
+      firebase.database().ref('request' + int).set({
         request: type
       });
       int = int + 1;
@@ -189,15 +190,11 @@ class ShelterOfferScreen extends React.Component {
               title="Address"
               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
               onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
+              value={this.state.address}
             />
-            <TextInput
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
+
             <Button
-              onPress={() => this.storeRequest('shelter')}
+              onPress={() => this.storeRequest(this.state.text, this.state.address)}
               title="Submit"
             />
           </View>

@@ -1,6 +1,7 @@
-import React from 'react';
-import { AppRegistry, StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import React, { Component } from 'react';
+import { Platform, AppRegistry, StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import { StackNavigator} from 'react-navigation';
+import { Constants, Location, Permissions } from 'expo';
  // 1.0.0-beta.11
 import * as firebase from 'firebase';
  // 4.3.1
@@ -23,12 +24,47 @@ class HomeScreen extends React.Component {
   static navigationOptions = {
     title: 'Welcome',
   }
+  state = {
+    location: null,
+    errorMessage: null,
+  };
 
+  componentWillMount() {
+    if (Platform.OS === 'android' && !Constants.isDevice) {
+      this.setState({
+        errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+      });
+    } else {
+      this._getLocationAsync();
+    }
+  }
+
+
+  _getLocationAsync = async () => {
+  let { status } = await Permissions.askAsync(Permissions.LOCATION);
+  if (status !== 'granted') {
+    this.setState({
+      errorMessage: 'Permission to access location was denied',
+    });
+  }
+
+  let location = await Location.getCurrentPositionAsync({});
+this.setState({ location });
+};
 
   render() {
     const { navigate } = this.props.navigation;
+
+    let text = 'Waiting..';
+        if (this.state.errorMessage) {
+          text = this.state.errorMessage;
+        } else if (this.state.location) {
+          text = JSON.stringify(this.state.location);
+        }
+
     return (
           <View>
+            <Text style={styles.paragraph}>{text}</Text>
             <Button
               onPress={() => navigate('Offer')}
               title="Offer"
@@ -578,5 +614,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  paragraph: {
+    margin: 24,
+    fontSize: 18,
+    textAlign: 'center',
   },
 });

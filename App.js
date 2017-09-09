@@ -7,8 +7,6 @@ import * as firebase from 'firebase';
 
 
 // Initialize Firebase
-
-
 var int = 0;
 
 class HomeScreen extends React.Component {
@@ -196,6 +194,7 @@ class ShelterOfferScreen extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
+    const {goBack} = this.props.navigation;
     return (
           <View>
             <TextInput
@@ -216,7 +215,7 @@ class ShelterOfferScreen extends React.Component {
               value={this.state.text}
             />
             <Button
-              onPress={() => this.storeOffer('shelter'), () => navigate('Home')}
+              onPress={() => this.storeOffer('shelter'), () => goBack()}
               title="Submit"
             />
           </View>
@@ -242,6 +241,7 @@ class ShelterRequestScreen extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
+    const {goBack} = this.props.navigation;
     return (
           <View>
             <TextInput
@@ -262,7 +262,7 @@ class ShelterRequestScreen extends React.Component {
               value={this.state.text}
             />
             <Button
-              onPress={() => this.storeRequest('shelter'), () => navigate('Home')}
+              onPress={() => this.storeRequest('shelter'), () => goBack()}
               title="Submit"
             />
           </View>
@@ -288,6 +288,7 @@ class AssistanceOfferScreen extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
+    const {goBack} = this.props.navigation;
     return (
           <View>
             <TextInput
@@ -308,7 +309,7 @@ class AssistanceOfferScreen extends React.Component {
               value={this.state.text}
             />
             <Button
-              onPress={() => this.storeOffer('assistance'), () => navigate('Home')}
+              onPress={() => this.storeOffer('assistance'), () => goBack()}
               title="Submit"
             />
           </View>
@@ -334,6 +335,7 @@ class AssistanceRequestScreen extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
+    const {goBack} = this.props.navigation;
     return (
           <View>
             <TextInput
@@ -354,7 +356,7 @@ class AssistanceRequestScreen extends React.Component {
               value={this.state.text}
             />
             <Button
-              onPress={() => this.storeRequest('assistance'), () => navigate('Home')}
+              onPress={() => this.storeRequest('assistance'), () => goBack()}
               title="Submit"
             />
           </View>
@@ -380,6 +382,7 @@ class RidesOfferScreen extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
+    const {goBack} = this.props.navigation;
     return (
           <View>
             <TextInput
@@ -400,7 +403,7 @@ class RidesOfferScreen extends React.Component {
               value={this.state.text}
             />
             <Button
-              onPress={() => this.storeOffer('ride'), () => navigate('Home')}
+              onPress={() => this.storeOffer('ride'), () => goBack()}
               title="Submit"
             />
           </View>
@@ -446,7 +449,7 @@ class RidesRequestScreen extends React.Component {
               value={this.state.text}
             />
             <Button
-              onPress={() => this.storeRequest('ride'), () => navigate('Home')}
+              onPress={() => this.storeRequest('ride'), () => goBack()}
               title="Submit"
             />
           </View>
@@ -472,6 +475,7 @@ class SuppliesOfferScreen extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
+    const {goBack} = this.props.navigation;
     return (
           <View>
             <TextInput
@@ -492,7 +496,7 @@ class SuppliesOfferScreen extends React.Component {
               value={this.state.text}
             />
             <Button
-              onPress={() => this.storeOffer('supplies'), () => navigate('Home')}
+              onPress={() => this.storeOffer('supplies'), () => goBack()}
               title="Submit"
             />
           </View>
@@ -538,7 +542,7 @@ class SuppliesRequestScreen extends React.Component {
               value={this.state.text}
             />
             <Button
-              onPress={() => this.storeRequest('supplies'), () => navigate('Home')}
+              onPress={() => this.storeRequest('supplies'), () => goBack()}
               title="Submit"
             />
           </View>

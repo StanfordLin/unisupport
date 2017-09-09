@@ -164,14 +164,27 @@ class ShelterOfferScreen extends React.Component {
   };
   constructor(props) {
     super(props);
-    this.state = { text: 'Placeholder' };
-    this.address = { text: 'Address' };
+
+    this.state = {
+      type: 'crazy',
+      address: '1043208 Danforth Dr ',
+      timeRequested:'0129410248',
+      gps: '1204812',
+      additionalDetails: 'dsfljsad;fladks',
+      active: true,
+      numberOfPeopleAffected: 0,
+     }
   }
 
-    storeRequest = type => {
-      firebase.database().ref('request' + int).set({
-        request: type
-      });
+  _handlePress() {
+    console.log(this.state.type);
+    console.log(this.state.timeRequested);
+  }
+
+    storeRequest = request => {
+      firebase.database().ref('request' + int).set(
+        request
+      );
       int = int + 1;
     };
 
@@ -189,12 +202,12 @@ class ShelterOfferScreen extends React.Component {
             <TextInput
               title="Address"
               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
+              onChangeText={(text2) => this.setState({text2})}
               value={this.state.address}
             />
 
             <Button
-              onPress={() => this.storeRequest(this.state.text, this.state.address)}
+              onPress={() => this.storeRequest(this.state)}
               title="Submit"
             />
           </View>

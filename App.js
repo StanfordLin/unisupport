@@ -182,6 +182,7 @@ class ShelterOfferScreen extends React.Component {
   }
 
     storeRequest = request => {
+      //                        name of the branch
       firebase.database().ref('request' + int).set(
         request
       );
@@ -196,14 +197,26 @@ class ShelterOfferScreen extends React.Component {
             <TextInput
               title="Type"
               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
+              onChangeText={(type) => this.setState({type})}
+              value={this.state.type}
             />
             <TextInput
               title="Address"
               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text2) => this.setState({text2})}
+              onChangeText={(address) => this.setState({address})}
               value={this.state.address}
+            />
+            <TextInput
+              title="Additional Details"
+              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+              onChangeText={(additionalDetails) => this.setState({additionalDetails})}
+              value={this.state.additionalDetails}
+            />
+            <TextInput
+              title="Additional Details"
+              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+              onChangeText={(numberOfPeopleAffected) => this.setState({numberOfPeopleAffected})}
+              value={this.state.numberOfPeopleAffected}
             />
 
             <Button

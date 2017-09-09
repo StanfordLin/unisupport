@@ -4,14 +4,14 @@ import { StackNavigator} from 'react-navigation';
 import * as firebase from 'firebase';
 
 // Initialize Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyAYvr_RQWQaTRxR9ImblpKBjGWHMUuUUgg",
-  authDomain: "unisupport-a0808.firebaseapp.com",
-  databaseURL: "https://unisupport-a0808.firebaseio.com",
-  storageBucket: "unisupport-a0808.appspot.com"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyAYvr_RQWQaTRxR9ImblpKBjGWHMUuUUgg",
+    authDomain: "unisupport-a0808.firebaseapp.com",
+    databaseURL: "https://unisupport-a0808.firebaseio.com",
+    storageBucket: "unisupport-a0808.appspot.com"
+  };
 
-firebase.initializeApp(firebaseConfig);
+  firebase.initializeApp(firebaseConfig);
 
 var int = 0;
 

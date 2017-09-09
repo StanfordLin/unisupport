@@ -16,8 +16,6 @@ firebase.initializeApp(firebaseConfig);
 
 var int = 0;
 
-// export default class App extends React.Component {
-
 class HomeScreen extends React.Component {
   static navigationOptions = {
     title: 'UniSupport',
@@ -43,40 +41,57 @@ class HomeScreen extends React.Component {
         );
   }
 }
+//
+// class OfferScreen extends React.Component {
+//   static navigationOptions = {
+//     title: 'Offer',
+//   };
+//
+//   storeRequest = type => {
+//     firebase.database().ref('request' + int).set({
+//       request: type
+//     });
+//     int = int + 1;
+//   };
+//
+//   render() {
+//     return (
+//       <View>
+//         <Button
+//           title="Shelter"
+//           onPress={() => this.storeRequest('shelter')}
+//         />
+//           <Button
+//           title="Assistance"
+//           onPress={() => this.storeRequest('assistance')}
+//         />
+//           <Button
+//           title="Supplies"
+//           onPress={() => this.storeRequest('supplies')}
+//         />
+//           <Button
+//           title="Ride"
+//           onPress={this.storeRequest}
+//         />
+//       </View>
+//     );
+//   }
+// }
 
 class OfferScreen extends React.Component {
   static navigationOptions = {
-    title: 'Offer',
+    title: 'Offers',
   };
-
-  storeRequest = type => {
-    firebase.database().ref('request' + int).set({
-      request: type
-    });
-    int = int + 1;
-  };
-
   render() {
+    const { navigate } = this.props.navigation;
     return (
-      <View>
-        <Button
-          title="Shelter"
-          onPress={() => this.storeRequest('shelter')}
-        />
-          <Button
-          title="Assistance"
-          onPress={() => this.storeRequest('assistance')}
-        />
-          <Button
-          title="Supplies"
-          onPress={() => this.storeRequest('supplies')}
-        />
-          <Button
-          title="Ride"
-          onPress={this.storeRequest}
-        />
-      </View>
-    );
+          <View>
+            <Button
+              onPress={() => navigate('ShelterRequest')}
+              title="Shelter Request"
+            />
+          </View>
+        );
   }
 }
 
@@ -133,11 +148,30 @@ class InfoScreen extends React.Component {
   }
 }
 
+class ShelterRequestScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Shelter Request',
+  };
+  render() {
+    const { navigate } = this.props.navigation;
+    return (
+          <View>
+            <Button
+              onPress={this.storeRequest}
+              title="Submit"
+            />
+          </View>
+        );
+  }
+}
+
 export default StackNavigator({
   Home: { screen: HomeScreen },
   Offer: { screen: OfferScreen },
   Request: { screen: RequestScreen },
   Info: { screen: InfoScreen },
+  ShelterRequest: { screen: ShelterRequestScreen },
+
 
 });
 

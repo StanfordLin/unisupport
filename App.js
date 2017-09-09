@@ -6,24 +6,25 @@ import * as firebase from 'firebase';
  // 4.3.1
 
 // Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyAYvr_RQWQaTRxR9ImblpKBjGWHMUuUUgg",
+  authDomain: "unisupport-a0808.firebaseapp.com",
+  databaseURL: "https://unisupport-a0808.firebaseio.com",
+  storageBucket: "unisupport-a0808.appspot.com"
+};
+
+if(!firebase.apps.length){
+firebase.initializeApp(firebaseConfig);
+}
+
 var int = 0;
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
     title: 'Welcome',
-    componentDidMount() {
-        const firebaseConfig = {
-          apiKey: "AIzaSyAYvr_RQWQaTRxR9ImblpKBjGWHMUuUUgg",
-          authDomain: "unisupport-a0808.firebaseapp.com",
-          databaseURL: "https://unisupport-a0808.firebaseio.com",
-          storageBucket: "unisupport-a0808.appspot.com"
-        };
+  }
 
-        if(!firebase.apps.length){
-        firebase.initializeApp(firebaseConfig);
-        }
-    }
-  };
+
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -44,7 +45,7 @@ class HomeScreen extends React.Component {
           </View>
         );
   }
-}
+};
 //
 // class OfferScreen extends React.Component {
 //   static navigationOptions = {
@@ -196,7 +197,7 @@ class ShelterOfferScreen extends React.Component {
               value={this.state.text}
             />
             <Button
-              onPress={() => this.storeOffer('shelter'), () => goBack()}
+              onPress={() => this.storeRequest('shelter')}
               title="Submit"
             />
           </View>
@@ -214,10 +215,10 @@ class ShelterRequestScreen extends React.Component {
   }
 
     storeRequest = type => {
-      firebase.database().ref('request' + int).set({
+      firebase.database().ref('request').set({
         request: type
       });
-      int = int + 1;
+      // int = int + 1;
     };
 
   render() {
@@ -243,293 +244,293 @@ class ShelterRequestScreen extends React.Component {
               value={this.state.text}
             />
             <Button
-              onPress={() => this.storeRequest('shelter'), () => goBack()}
+              onPress={() => this.storeRequest(''), () => goBack()}
               title="Submit"
             />
           </View>
         );
   }
 }
-
-class AssistanceOfferScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Offer Assistance',
-  };
-  constructor(props) {
-    super(props);
-    this.state = { text: 'Placeholder' };
-  }
-
-    storeRequest = type => {
-      firebase.database().ref('offer' + int).set({
-        request: type
-      });
-      int = int + 1;
-    };
-
-  render() {
-    const { navigate } = this.props.navigation;
-    const {goBack} = this.props.navigation;
-    return (
-          <View>
-            <TextInput
-              title="Type"
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <TextInput
-              title="Address"
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <TextInput
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <Button
-              onPress={() => this.storeOffer('assistance'), () => goBack()}
-              title="Submit"
-            />
-          </View>
-        );
-  }
-}
-
-class AssistanceRequestScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Request Assistance',
-  };
-  constructor(props) {
-    super(props);
-    this.state = { text: 'Placeholder' };
-  }
-
-    storeRequest = type => {
-      firebase.database().ref('request' + int).set({
-        request: type
-      });
-      int = int + 1;
-    };
-
-  render() {
-    const { navigate } = this.props.navigation;
-    const {goBack} = this.props.navigation;
-    return (
-          <View>
-            <TextInput
-              title="Type"
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <TextInput
-              title="Address"
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <TextInput
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <Button
-              onPress={() => this.storeRequest('assistance'), () => goBack()}
-              title="Submit"
-            />
-          </View>
-        );
-  }
-}
-
-class RidesOfferScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Offer Rides',
-  };
-  constructor(props) {
-    super(props);
-    this.state = { text: 'Placeholder' };
-  }
-
-    storeRequest = type => {
-      firebase.database().ref('offer' + int).set({
-        request: type
-      });
-      int = int + 1;
-    };
-
-  render() {
-    const { navigate } = this.props.navigation;
-    const {goBack} = this.props.navigation;
-    return (
-          <View>
-            <TextInput
-              title="Type"
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <TextInput
-              title="Address"
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <TextInput
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <Button
-              onPress={() => this.storeOffer('ride'), () => goBack()}
-              title="Submit"
-            />
-          </View>
-        );
-  }
-}
-
-class RidesRequestScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Request Rides',
-  };
-  constructor(props) {
-    super(props);
-    this.state = { text: 'Placeholder' };
-  }
-
-    storeRequest = type => {
-      firebase.database().ref('request' + int).set({
-        request: type
-      });
-      int = int + 1;
-    };
-
-  render() {
-    const { navigate } = this.props.navigation;
-    return (
-          <View>
-            <TextInput
-              title="Type"
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <TextInput
-              title="Address"
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <TextInput
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <Button
-              onPress={() => this.storeRequest('ride'), () => goBack()}
-              title="Submit"
-            />
-          </View>
-        );
-  }
-}
-
-class SuppliesOfferScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Offer Supplies',
-  };
-  constructor(props) {
-    super(props);
-    this.state = { text: 'Placeholder' };
-  }
-
-    storeRequest = type => {
-      firebase.database().ref('offer' + int).set({
-        request: type
-      });
-      int = int + 1;
-    };
-
-  render() {
-    const { navigate } = this.props.navigation;
-    const {goBack} = this.props.navigation;
-    return (
-          <View>
-            <TextInput
-              title="Type"
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <TextInput
-              title="Address"
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <TextInput
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <Button
-              onPress={() => this.storeOffer('supplies'), () => goBack()}
-              title="Submit"
-            />
-          </View>
-        );
-  }
-}
-
-class SuppliesRequestScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Request Supplies',
-  };
-  constructor(props) {
-    super(props);
-    this.state = { text: 'Placeholder' };
-  }
-
-    storeRequest = type => {
-      firebase.database().ref('request' + int).set({
-        request: type
-      });
-      int = int + 1;
-    };
-
-  render() {
-    const { navigate } = this.props.navigation;
-    return (
-          <View>
-            <TextInput
-              title="Type"
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <TextInput
-              title="Address"
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <TextInput
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
-            />
-            <Button
-              onPress={() => this.storeRequest('supplies'), () => goBack()}
-              title="Submit"
-            />
-          </View>
-        );
-  }
-}
+//
+// class AssistanceOfferScreen extends React.Component {
+//   static navigationOptions = {
+//     title: 'Offer Assistance',
+//   };
+//   constructor(props) {
+//     super(props);
+//     this.state = { text: 'Placeholder' };
+//   }
+//
+//     storeRequest = type => {
+//       firebase.database().ref('offer' + int).set({
+//         request: type
+//       });
+//       int = int + 1;
+//     };
+//
+//   render() {
+//     const { navigate } = this.props.navigation;
+//     const {goBack} = this.props.navigation;
+//     return (
+//           <View>
+//             <TextInput
+//               title="Type"
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <TextInput
+//               title="Address"
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <TextInput
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <Button
+//               onPress={() => this.storeOffer('assistance'), () => goBack()}
+//               title=""
+//             />
+//           </View>
+//         );
+//   }
+// }
+//
+// class AssistanceRequestScreen extends React.Component {
+//   static navigationOptions = {
+//     title: 'Request Assistance',
+//   };
+//   constructor(props) {
+//     super(props);
+//     this.state = { text: 'Placeholder' };
+//   }
+//
+//     storeRequest = type => {
+//       firebase.database().ref('request' + int).set({
+//         request: type
+//       });
+//       int = int + 1;
+//     };
+//
+//   render() {
+//     const { navigate } = this.props.navigation;
+//     const {goBack} = this.props.navigation;
+//     return (
+//           <View>
+//             <TextInput
+//               title="Type"
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <TextInput
+//               title="Address"
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <TextInput
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <Button
+//               onPress={() => this.storeRequest('assistance'), () => goBack()}
+//               title=""
+//             />
+//           </View>
+//         );
+//   }
+// }
+//
+// class RidesOfferScreen extends React.Component {
+//   static navigationOptions = {
+//     title: 'Offer Rides',
+//   };
+//   constructor(props) {
+//     super(props);
+//     this.state = { text: 'Placeholder' };
+//   }
+//
+//     storeRequest = type => {
+//       firebase.database().ref('offer' + int).set({
+//         request: type
+//       });
+//       int = int + 1;
+//     };
+//
+//   render() {
+//     const { navigate } = this.props.navigation;
+//     const {goBack} = this.props.navigation;
+//     return (
+//           <View>
+//             <TextInput
+//               title="Type"
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <TextInput
+//               title="Address"
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <TextInput
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <Button
+//               onPress={() => this.storeOffer('ride'), () => goBack()}
+//               title=""
+//             />
+//           </View>
+//         );
+//   }
+// }
+//
+// class RidesRequestScreen extends React.Component {
+//   static navigationOptions = {
+//     title: 'Request Rides',
+//   };
+//   constructor(props) {
+//     super(props);
+//     this.state = { text: 'Placeholder' };
+//   }
+//
+//     storeRequest = type => {
+//       firebase.database().ref('request' + int).set({
+//         request: type
+//       });
+//       int = int + 1;
+//     };
+//
+//   render() {
+//     const { navigate } = this.props.navigation;
+//     return (
+//           <View>
+//             <TextInput
+//               title="Type"
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <TextInput
+//               title="Address"
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <TextInput
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <Button
+//               onPress={() => this.storeRequest('ride'), () => goBack()}
+//               title=""
+//             />
+//           </View>
+//         );
+//   }
+// }
+//
+// class SuppliesOfferScreen extends React.Component {
+//   static navigationOptions = {
+//     title: 'Offer Supplies',
+//   };
+//   constructor(props) {
+//     super(props);
+//     this.state = { text: 'Placeholder' };
+//   }
+//
+//     storeRequest = type => {
+//       firebase.database().ref('offer' + int).set({
+//         request: type
+//       });
+//       int = int + 1;
+//     };
+//
+//   render() {
+//     const { navigate } = this.props.navigation;
+//     const {goBack} = this.props.navigation;
+//     return (
+//           <View>
+//             <TextInput
+//               title="Type"
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <TextInput
+//               title="Address"
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <TextInput
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <Button
+//               onPress={() => this.storeOffer('supplies'), () => goBack()}
+//               title=""
+//             />
+//           </View>
+//         );
+//   }
+// }
+//
+// class SuppliesRequestScreen extends React.Component {
+//   static navigationOptions = {
+//     title: 'Request Supplies',
+//   };
+//   constructor(props) {
+//     super(props);
+//     this.state = { text: 'Placeholder' };
+//   }
+//
+//     storeRequest = type => {
+//       firebase.database().ref('request' + int).set({
+//         request: type
+//       });
+//       int = int + 1;
+//     };
+//
+//   render() {
+//     const { navigate } = this.props.navigation;
+//     return (
+//           <View>
+//             <TextInput
+//               title="Type"
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <TextInput
+//               title="Address"
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <TextInput
+//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+//               onChangeText={(text) => this.setState({text})}
+//               value={this.state.text}
+//             />
+//             <Button
+//               onPress={() => this.storeRequest('supplies'), () => goBack()}
+//               title=""
+//             />
+//           </View>
+//         );
+//   }
+// }
 
 export default StackNavigator({
   Home: { screen: HomeScreen },
@@ -537,13 +538,13 @@ export default StackNavigator({
   Request: { screen: RequestScreen },
   Info: { screen: InfoScreen },
   RequestShelter: { screen: ShelterRequestScreen },
-  RequestAssistance: { screen: AssistanceRequestScreen },
-  RequestSupplies: { screen: SuppliesRequestScreen },
-  RequestRides: { screen: RidesRequestScreen },
+  // RequestAssistance: { screen: AssistanceRequestScreen },
+  // RequestSupplies: { screen: SuppliesRequestScreen },
+  // RequestRides: { screen: RidesRequestScreen },
   OfferShelter: { screen: ShelterOfferScreen },
-  OfferAssistance: { screen: AssistanceOfferScreen },
-  OfferSupplies: { screen: SuppliesOfferScreen },
-  OfferRides: { screen: RidesOfferScreen }
+  // OfferAssistance: { screen: AssistanceOfferScreen },
+  // OfferSupplies: { screen: SuppliesOfferScreen },
+  // OfferRides: { screen: RidesOfferScreen }
 
 });
 

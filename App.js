@@ -6,22 +6,25 @@ import * as firebase from 'firebase';
  // 4.3.1
 
 // Initialize Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyAYvr_RQWQaTRxR9ImblpKBjGWHMUuUUgg",
-  authDomain: "unisupport-a0808.firebaseapp.com",
-  databaseURL: "https://unisupport-a0808.firebaseio.com",
-  storageBucket: "unisupport-a0808.appspot.com"
-};
 
-if(!firebase.apps.length){
-firebase.initializeApp(firebaseConfig);
-}
 
 var int = 0;
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
     title: 'Welcome',
+    componentDidMount() {
+        const firebaseConfig = {
+          apiKey: "AIzaSyAYvr_RQWQaTRxR9ImblpKBjGWHMUuUUgg",
+          authDomain: "unisupport-a0808.firebaseapp.com",
+          databaseURL: "https://unisupport-a0808.firebaseio.com",
+          storageBucket: "unisupport-a0808.appspot.com"
+        };
+
+        if(!firebase.apps.length){
+        firebase.initializeApp(firebaseConfig);
+        }
+    }
   };
   render() {
     const { navigate } = this.props.navigation;

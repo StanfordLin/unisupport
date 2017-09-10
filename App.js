@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Platform, AppRegistry, StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { Platform, AppRegistry, StyleSheet, Text, View, Button, TextInput, FlatList, List } from 'react-native';
 import { StackNavigator} from 'react-navigation';
-import { Constants, Location, Permissions } from 'expo';
+import { Constants, Location, Permissions, MapView } from 'expo';
  // 1.0.0-beta.11
 import * as firebase from 'firebase';
  // 4.3.1
@@ -24,48 +24,11 @@ class HomeScreen extends React.Component {
   static navigationOptions = {
     title: 'Welcome',
   }
-  state = {
-    location: null,
-    errorMessage: null,
-  };
-
-  componentWillMount() {
-    if (Platform.OS === 'android' && !Constants.isDevice) {
-      this.setState({
-        errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
-      });
-    } else {
-      this._getLocationAsync();
-    }
-  }
-
-
-  _getLocationAsync = async () => {
-  let { status } = await Permissions.askAsync(Permissions.LOCATION);
-  if (status !== 'granted') {
-    this.setState({
-      errorMessage: 'Permission to access location was denied',
-    });
-  }
-
-  let location = await Location.getCurrentPositionAsync({});
-this.setState({ location });
-};
 
   render() {
     const { navigate } = this.props.navigation;
-
-    let gps = 'Waiting..';
-        if (this.state.errorMessage) {
-          gps = this.state.errorMessage;
-        } else if (this.state.location) {
-          gps = JSON.stringify(this.state.location);
-          console.log(gps);
-        }
-
     return (
           <View>
-            <Text style={styles.paragraph}>{gps}</Text>
             <Button
               onPress={() => navigate('Offer')}
               title="Offer"
@@ -74,9 +37,10 @@ this.setState({ location });
               onPress={() => navigate('Request')}
               title="Request"
             />
+
             <Button
-              onPress={() => navigate('Info')}
-              title="Info"
+              onPress={() => navigate('RequestView')}
+              title="View Map"
             />
 
           </View>
@@ -85,40 +49,7 @@ this.setState({ location });
 };
 //
 // class OfferScreen extends React.Component {
-//   static navigationOptions = {
-//     title: 'Offer',
-//   };
 //
-//   storeRequest = type => {
-//     firebase.database().ref('request' + int).set({
-//       request: type
-//     });
-//     int = int + 1;
-//   };
-//
-//   render() {
-//     return (
-//       <View>
-//         <Button
-//           title="Shelter"
-//           onPress={() => this.storeRequest('shelter')}
-//         />
-//           <Button
-//           title="Assistance"
-//           onPress={() => this.storeRequest('assistance')}
-//         />
-//           <Button
-//           title="Supplies"
-//           onPress={() => this.storeRequest('supplies')}
-//         />
-//           <Button
-//           title="Ride"
-//           onPress={this.storeRequest}
-//         />
-//       </View>
-//     );
-//   }
-// }
 
 class OfferScreen extends React.Component {
   static navigationOptions = {
@@ -177,23 +108,23 @@ class RequestScreen extends React.Component {
         );
   }
 }
-
-
-class InfoScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Info',
-  };
-  render() {
-    return (
-      <View>
-        <Button
-              onPress={this.storeRequest}
-              title="Submit"
-            />
-      </View>
-    );
-  }
-}
+//
+//
+// class InfoScreen extends React.Component {
+//   static navigationOptions = {
+//     title: 'Info',
+//   };
+//   render() {
+//     return (
+//       <View>
+//         <Button
+//               onPress={this.storeRequest}
+//               title="Submit"
+//             />
+//       </View>
+//     );
+//   }
+// }
 
 class ShelterOfferScreen extends React.Component {
   static navigationOptions = {
@@ -202,56 +133,88 @@ class ShelterOfferScreen extends React.Component {
   constructor(props) {
     super(props);
 
+
     this.state = {
-      type: 'crazy',
-      address: '1043208 Danforth Dr ',
-      timeRequested:'0129410248',
-      additionalDetails: 'dsfljsad;fladks',
+      type: '',
+      address: '',
+      details: '',
       active: true,
       numberOfPeopleAffected: 0,
-      // gpsLatitude: this.state.location.coords.latitude,
-      // gpsLongitude: this.state.location.coords.longitude,
      }
   }
 
-  _handlePress() {
-    console.log(this.state.type);
-    console.log(this.state.timeRequested);
-  }
+  state = {
+    location: null,
+    errorMessage: null,
+  };
 
-    storeRequest = request => {
+  componentWillMount() {
+      if (Platform.OS === 'android' && !Constants.isDevice) {
+        this.setState({
+          errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+        });
+      }
+    }
+
+    _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+   this.setState({ location });
+ };
+
+     storeRequest = async(request) => {
+      //retrieve the location
+      // add the location to the request object
       //                        name of the branch
+      await this._getLocationAsync();
       firebase.database().ref('request' + int).set(
-        request
+        this.state
       );
       int = int + 1;
+
     };
 
   render() {
     const { navigate } = this.props.navigation;
     const {goBack} = this.props.navigation;
+    let text = 'Waiting..';
+      if (this.state.errorMessage) {
+        text = this.state.errorMessage;
+      } else if (this.state.location) {
+        text = JSON.stringify(this.state.location);
+      }
     return (
           <View>
+            <Text>Type of help requested (First Aid, Shelter, Water, etc.)</Text>
             <TextInput
               title="Type"
               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
               onChangeText={(type) => this.setState({type})}
               value={this.state.type}
             />
+          <Text>Address</Text>
             <TextInput
               title="Address"
               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
               onChangeText={(address) => this.setState({address})}
               value={this.state.address}
             />
+          <Text>Details</Text>
             <TextInput
-              title="Additional Details"
+              title="Details"
               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(additionalDetails) => this.setState({additionalDetails})}
-              value={this.state.additionalDetails}
+              onChangeText={(details) => this.setState({details})}
+              value={this.state.details}
             />
+            <Text>Number of People Affected</Text>
             <TextInput
-              title="Additional Details"
+              title="Number of People Affected"
               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
               onChangeText={(numberOfPeopleAffected) => this.setState({numberOfPeopleAffected})}
               value={this.state.numberOfPeopleAffected}
@@ -314,290 +277,93 @@ class ShelterRequestScreen extends React.Component {
 }
 //
 // class AssistanceOfferScreen extends React.Component {
-//   static navigationOptions = {
-//     title: 'Offer Assistance',
-//   };
-//   constructor(props) {
-//     super(props);
-//     this.state = { text: 'Placeholder' };
-//   }
-//
-//     storeRequest = type => {
-//       firebase.database().ref('offer' + int).set({
-//         request: type
-//       });
-//       int = int + 1;
-//     };
-//
-//   render() {
-//     const { navigate } = this.props.navigation;
-//     const {goBack} = this.props.navigation;
-//     return (
-//           <View>
-//             <TextInput
-//               title="Type"
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <TextInput
-//               title="Address"
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <TextInput
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <Button
-//               onPress={() => this.storeOffer('assistance'), () => goBack()}
-//               title=""
-//             />
-//           </View>
-//         );
-//   }
-// }
 //
 // class AssistanceRequestScreen extends React.Component {
-//   static navigationOptions = {
-//     title: 'Request Assistance',
-//   };
-//   constructor(props) {
-//     super(props);
-//     this.state = { text: 'Placeholder' };
-//   }
-//
-//     storeRequest = type => {
-//       firebase.database().ref('request' + int).set({
-//         request: type
-//       });
-//       int = int + 1;
-//     };
-//
-//   render() {
-//     const { navigate } = this.props.navigation;
-//     const {goBack} = this.props.navigation;
-//     return (
-//           <View>
-//             <TextInput
-//               title="Type"
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <TextInput
-//               title="Address"
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <TextInput
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <Button
-//               onPress={() => this.storeRequest('assistance'), () => goBack()}
-//               title=""
-//             />
-//           </View>
-//         );
-//   }
-// }
 //
 // class RidesOfferScreen extends React.Component {
-//   static navigationOptions = {
-//     title: 'Offer Rides',
-//   };
-//   constructor(props) {
-//     super(props);
-//     this.state = { text: 'Placeholder' };
-//   }
-//
-//     storeRequest = type => {
-//       firebase.database().ref('offer' + int).set({
-//         request: type
-//       });
-//       int = int + 1;
-//     };
-//
-//   render() {
-//     const { navigate } = this.props.navigation;
-//     const {goBack} = this.props.navigation;
-//     return (
-//           <View>
-//             <TextInput
-//               title="Type"
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <TextInput
-//               title="Address"
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <TextInput
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <Button
-//               onPress={() => this.storeOffer('ride'), () => goBack()}
-//               title=""
-//             />
-//           </View>
-//         );
-//   }
-// }
-//
+
 // class RidesRequestScreen extends React.Component {
-//   static navigationOptions = {
-//     title: 'Request Rides',
-//   };
-//   constructor(props) {
-//     super(props);
-//     this.state = { text: 'Placeholder' };
-//   }
-//
-//     storeRequest = type => {
-//       firebase.database().ref('request' + int).set({
-//         request: type
-//       });
-//       int = int + 1;
-//     };
-//
-//   render() {
-//     const { navigate } = this.props.navigation;
-//     return (
-//           <View>
-//             <TextInput
-//               title="Type"
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <TextInput
-//               title="Address"
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <TextInput
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <Button
-//               onPress={() => this.storeRequest('ride'), () => goBack()}
-//               title=""
-//             />
-//           </View>
-//         );
-//   }
-// }
 //
 // class SuppliesOfferScreen extends React.Component {
-//   static navigationOptions = {
-//     title: 'Offer Supplies',
-//   };
-//   constructor(props) {
-//     super(props);
-//     this.state = { text: 'Placeholder' };
-//   }
-//
-//     storeRequest = type => {
-//       firebase.database().ref('offer' + int).set({
-//         request: type
-//       });
-//       int = int + 1;
-//     };
-//
-//   render() {
-//     const { navigate } = this.props.navigation;
-//     const {goBack} = this.props.navigation;
-//     return (
-//           <View>
-//             <TextInput
-//               title="Type"
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <TextInput
-//               title="Address"
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <TextInput
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <Button
-//               onPress={() => this.storeOffer('supplies'), () => goBack()}
-//               title=""
-//             />
-//           </View>
-//         );
-//   }
-// }
-//
+
 // class SuppliesRequestScreen extends React.Component {
-//   static navigationOptions = {
-//     title: 'Request Supplies',
-//   };
-//   constructor(props) {
-//     super(props);
-//     this.state = { text: 'Placeholder' };
-//   }
-//
-//     storeRequest = type => {
-//       firebase.database().ref('request' + int).set({
-//         request: type
-//       });
-//       int = int + 1;
-//     };
-//
-//   render() {
-//     const { navigate } = this.props.navigation;
-//     return (
-//           <View>
-//             <TextInput
-//               title="Type"
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <TextInput
-//               title="Address"
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <TextInput
-//               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-//               onChangeText={(text) => this.setState({text})}
-//               value={this.state.text}
-//             />
-//             <Button
-//               onPress={() => this.storeRequest('supplies'), () => goBack()}
-//               title=""
-//             />
-//           </View>
-//         );
-//   }
-// }
+
+class RequestViewScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Requests',
+  };
+
+  componentWillMount() {
+    this.setState({childData:[]});
+    this.loadRequests(this);
+  }
+
+    loadRequests(x) {
+      console.log("this is being called");
+      var leadsRef = firebase.database().ref('/');
+      leadsRef.on('value', function(snapshot) {
+        childData = [];
+        var counter = 0;
+        snapshot.forEach(function(childSnapshot) {
+          counter += 1;
+          var obj = childSnapshot.val();
+          obj.key = counter;
+          childData.push(obj);
+
+        });
+        x.setState({
+          childData
+        })
+    });
+    }
+
+  render() {
+    const { navigate } = this.props.navigation;
+    console.log(this.state.childData);
+    const { goBack } = this.props.navigation;
+    return (
+        <View style={{flex: 1}}>
+          <MapView
+                  style={{ flex: 5 }}
+                  initialRegion={{
+                    latitude: 27.6648,
+                    longitude: -81.5158,
+                    latitudeDelta: 9.0,
+                    longitudeDelta: 9.0,
+                  }}
+                  region={this.state.region}
+                    onRegionChange={this.onRegionChange}
+                  >
+                    {this.state.childData.map(item => (
+                      <MapView.Marker
+                        coordinate={{
+                          latitude: item.location.coords.latitude,
+                          longitude: item.location.coords.longitude,
+                        }}
+                        title={"Helloooooo"}
+                        description={"marker.description"}
+                      />
+                    ))}
+          </MapView>
+          <View style={{flex: 2, backgroundColor: 'skyblue'}}>
+
+              <FlatList
+                data={this.state.childData}
+              renderItem={({item}) => <Text> {item.type} {item.location.timestamp} {item.details} {item.location.coords.latitude} {item.location.coords.longitude}</Text>}
+              //  JSON.stringify(item)
+        />
+          </View>
+
+        </View>
+        );
+  }
+}
 
 export default StackNavigator({
   Home: { screen: HomeScreen },
   Offer: { screen: OfferScreen },
   Request: { screen: RequestScreen },
-  Info: { screen: InfoScreen },
+  // Info: { screen: InfoScreen },
   RequestShelter: { screen: ShelterRequestScreen },
   // RequestAssistance: { screen: AssistanceRequestScreen },
   // RequestSupplies: { screen: SuppliesRequestScreen },
@@ -606,6 +372,7 @@ export default StackNavigator({
   // OfferAssistance: { screen: AssistanceOfferScreen },
   // OfferSupplies: { screen: SuppliesOfferScreen },
   // OfferRides: { screen: RidesOfferScreen }
+  RequestView: { screen: RequestViewScreen },
 
 });
 

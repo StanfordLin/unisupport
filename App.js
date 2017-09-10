@@ -596,6 +596,10 @@ class RequestViewScreen extends React.Component {
   static navigationOptions = {
     title: 'Requests',
   };
+
+  componentWillMount() {
+    this.loadRequests();
+  }
   // constructor(props) {
   //   super(props);
   //   this.state = { text: 'Placeholder' };
@@ -607,6 +611,22 @@ class RequestViewScreen extends React.Component {
     //   });
     //   // int = int + 1;
     // };
+    loadRequests() {
+      console.log("this is being called");
+      var leadsRef = firebase.database().ref('/');
+      leadsRef.on('value', function(snapshot) {
+        snapshot.forEach(function(childSnapshot) {
+          var childData = childSnapshot.val();
+          console.log(childData);
+      });
+    });
+    }
+
+    // await this._getLocationAsync();
+    // firebase.database().ref('request' + int).set(
+    //   this.state
+    // );
+    // int = int + 1;
 
   render() {
     const { navigate } = this.props.navigation;
@@ -622,7 +642,10 @@ class RequestViewScreen extends React.Component {
                     longitudeDelta: 0.0421,
                   }}
           />
-          <View style={{flex: 2, backgroundColor: 'skyblue'}} />
+          <View style={{flex: 2, backgroundColor: 'skyblue'}}
+
+             />
+
         </View>
 
         );

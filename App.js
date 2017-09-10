@@ -173,7 +173,7 @@ class ShelterOfferScreen extends React.Component {
     this.state = {
       type: '',
       address: '',
-      additionalDetails: '',
+      details: '',
       active: true,
       numberOfPeopleAffected: 0,
      }
@@ -227,27 +227,30 @@ class ShelterOfferScreen extends React.Component {
       }
     return (
           <View>
-            <Text style={styles.paragraph}>{text}</Text>
+            <Text>Type of help requested (First Aid, Shelter, Water, etc.)</Text>
             <TextInput
               title="Type"
               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
               onChangeText={(type) => this.setState({type})}
               value={this.state.type}
             />
+          <Text>Address</Text>
             <TextInput
               title="Address"
               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
               onChangeText={(address) => this.setState({address})}
               value={this.state.address}
             />
+          <Text>Details</Text>
             <TextInput
-              title="Additional Details"
+              title="Details"
               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(additionalDetails) => this.setState({additionalDetails})}
-              value={this.state.additionalDetails}
+              onChangeText={(details) => this.setState({details})}
+              value={this.state.details}
             />
+            <Text>Number of People Affected</Text>
             <TextInput
-              title="Additional Details"
+              title="Number of People Affected"
               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
               onChangeText={(numberOfPeopleAffected) => this.setState({numberOfPeopleAffected})}
               value={this.state.numberOfPeopleAffected}
@@ -639,6 +642,24 @@ class RequestViewScreen extends React.Component {
     // );
     // int = int + 1;
 
+// renderMap() {
+//   return(
+// // <MapView style={ styles.map } mapType={"hybrid"}
+// //   region={{
+// //     latitude: this.state.myLatitude,
+// //     longitude: this.state.myLongitube,
+// //     latitudeDelta: 0.01,
+// //     longitudeDelta: 0.01,
+// //   }}>
+// //   {
+// //     this.state.machines.map(({ latitude, longitude }) => (
+// //       <MapView.Marker coordinate={{ latitude, longitude }} />
+// //     ))
+// //   }
+// // </MapView>
+//   );
+// }
+
   render() {
     const { navigate } = this.props.navigation;
     console.log(this.state.childData);
@@ -647,18 +668,31 @@ class RequestViewScreen extends React.Component {
         <View style={{flex: 1}}>
           <MapView
                   style={{ flex: 5 }}
-                  initialRegion={{
-                    latitude: 27.6648,
-                    longitude: -81.5158,
-                    latitudeDelta: 9.0,
-                    longitudeDelta: 9.0,
-                  }}
-          />
+                  // initialRegion={{
+                  //   latitude: 27.6648,
+                  //   longitude: -81.5158,
+                  //   latitudeDelta: 9.0,
+                  //   longitudeDelta: 9.0,
+                  // }}
+                  // region={this.state.region}
+                    // onRegionChange={this.onRegionChange}
+                  >
+                    {this.state.childData.map(item => (
+                      <MapView.Marker
+                        coordinate={{
+                          latitude: item.location.coords.latitude,
+                          longitude: item.location.coords.longitude,
+                        }}
+                        title={"Helloooooo"}
+                        description={"marker.description"}
+                      />
+                    ))}
+          </MapView>
           <View style={{flex: 2, backgroundColor: 'skyblue'}}>
 
               <FlatList
                 data={this.state.childData}
-              renderItem={({item}) => <Text> {item.location.timestamp} {item.additionalDetails} {item.location.coords.latitude} {item.location.coords.longitude}</Text>}
+              renderItem={({item}) => <Text> {item.type} {item.location.timestamp} {item.details} {item.location.coords.latitude} {item.location.coords.longitude}</Text>}
               //  JSON.stringify(item)
         />
           </View>

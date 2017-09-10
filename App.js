@@ -6,6 +6,7 @@ import { Constants, Location, Permissions } from 'expo';
 import * as firebase from 'firebase';
  // 4.3.1
 
+
 // Initialize Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyAYvr_RQWQaTRxR9ImblpKBjGWHMUuUUgg",
@@ -22,6 +23,9 @@ var int = 0;
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
+<<<<<<< HEAD
+    title: 'UniSupport',
+=======
     title: 'Welcome',
   }
   state = {
@@ -52,6 +56,15 @@ class HomeScreen extends React.Component {
 this.setState({ location });
 };
 
+<<<<<<< HEAD
+        if(!firebase.apps.length){
+        firebase.initializeApp(firebaseConfig);
+        }
+    }
+>>>>>>> refs/remotes/origin/master
+  };
+=======
+>>>>>>> refs/remotes/origin/master
   render() {
     const { navigate } = this.props.navigation;
 
@@ -187,9 +200,23 @@ class InfoScreen extends React.Component {
     return (
       <View>
         <Button
+<<<<<<< HEAD
+          title="Map"
+          onPress={this.storeRequest}
+        />
+          <Button
+          title="Updates"
+          onPress={this.storeRequest}
+        />
+          <Button
+          title="Last Minutes"
+          onPress={this.storeRequest}
+       />
+=======
               onPress={this.storeRequest}
               title="Submit"
             />
+>>>>>>> refs/remotes/origin/master
       </View>
     );
   }
@@ -613,7 +640,7 @@ export default StackNavigator({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F5F5F5',
     alignItems: 'center',
     justifyContent: 'center',
   },

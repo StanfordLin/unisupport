@@ -55,16 +55,17 @@ this.setState({ location });
   render() {
     const { navigate } = this.props.navigation;
 
-    let text = 'Waiting..';
+    let gps = 'Waiting..';
         if (this.state.errorMessage) {
-          text = this.state.errorMessage;
+          gps = this.state.errorMessage;
         } else if (this.state.location) {
-          text = JSON.stringify(this.state.location);
+          gps = JSON.stringify(this.state.location);
+          console.log(gps);
         }
 
     return (
           <View>
-            <Text style={styles.paragraph}>{text}</Text>
+            <Text style={styles.paragraph}>{gps}</Text>
             <Button
               onPress={() => navigate('Offer')}
               title="Offer"
@@ -205,10 +206,11 @@ class ShelterOfferScreen extends React.Component {
       type: 'crazy',
       address: '1043208 Danforth Dr ',
       timeRequested:'0129410248',
-      gps: '1204812',
       additionalDetails: 'dsfljsad;fladks',
       active: true,
       numberOfPeopleAffected: 0,
+      // gpsLatitude: this.state.location.coords.latitude,
+      // gpsLongitude: this.state.location.coords.longitude,
      }
   }
 

@@ -171,10 +171,10 @@ class ShelterOfferScreen extends React.Component {
 
 
     this.state = {
-      type: 'crazy',
-      address: '1043208 Danforth Dr ',
-      timeRequested:'0129410248',
-      additionalDetails: 'dsfljsad;fladks',
+      type: '',
+      address: '',
+      time:'',
+      additionalDetails: '',
       active: true,
       numberOfPeopleAffected: 0,
       //gpsLatitude: this.state.location.coords.latitude,
@@ -192,8 +192,6 @@ class ShelterOfferScreen extends React.Component {
         this.setState({
           errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
         });
-      } else {
-        this._getLocationAsync();
       }
     }
 
@@ -208,17 +206,18 @@ class ShelterOfferScreen extends React.Component {
     let location = await Location.getCurrentPositionAsync({});
    this.setState({ location });
  };
-    // 
-    // async storeRequest = request => {
-    //   //retrieve the location
-    //   // add the location to the request object
-    //   //                        name of the branch
-    //   firebase.database().ref('request' + int).set(
-    //     request
-    //   );
-    //   int = int + 1;
-    //
-    // };
+
+     storeRequest = async(request) => {
+      //retrieve the location
+      // add the location to the request object
+      //                        name of the branch
+      await this._getLocationAsync();
+      firebase.database().ref('request' + int).set(
+        this.state
+      );
+      int = int + 1;
+
+    };
 
   render() {
     const { navigate } = this.props.navigation;

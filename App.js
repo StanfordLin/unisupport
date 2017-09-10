@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Platform, AppRegistry, StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { Platform, AppRegistry, StyleSheet, Text, View, Button, TextInput, FlatList, List } from 'react-native';
 import { StackNavigator} from 'react-navigation';
 import { Constants, Location, Permissions, MapView } from 'expo';
  // 1.0.0-beta.11
@@ -173,12 +173,9 @@ class ShelterOfferScreen extends React.Component {
     this.state = {
       type: '',
       address: '',
-      time:'',
       additionalDetails: '',
       active: true,
       numberOfPeopleAffected: 0,
-      //gpsLatitude: this.state.location.coords.latitude,
-      //gpsLongitude: this.state.location.coords.longitude,
      }
   }
 
@@ -598,7 +595,8 @@ class RequestViewScreen extends React.Component {
   };
 
   componentWillMount() {
-    this.loadRequests();
+    this.setState({childData:[]});
+    this.loadRequests(this);
   }
   // constructor(props) {
   //   super(props);
@@ -611,14 +609,27 @@ class RequestViewScreen extends React.Component {
     //   });
     //   // int = int + 1;
     // };
-    loadRequests() {
+    loadRequests(x) {
       console.log("this is being called");
       var leadsRef = firebase.database().ref('/');
       leadsRef.on('value', function(snapshot) {
+        childData = [];
+        var counter = 0;
         snapshot.forEach(function(childSnapshot) {
-          var childData = childSnapshot.val();
-          console.log(childData);
-      });
+          counter += 1;
+          var obj = childSnapshot.val();
+          obj.key = counter;
+          childData.push(obj);
+          // var childData = childSnapshot.val();
+          // var childDataKeys = JSON.parse(JSON.stringify(childData));
+          // console.log(childData);
+          // x.setState({
+          //   childData: Object.keys(childDataKeys).map((k) => ({key: k, value: childDataKeys[k]}))
+          // });
+        });
+        x.setState({
+          childData
+        })
     });
     }
 
@@ -630,24 +641,29 @@ class RequestViewScreen extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
+    console.log(this.state.childData);
     const { goBack } = this.props.navigation;
     return (
         <View style={{flex: 1}}>
           <MapView
                   style={{ flex: 5 }}
                   initialRegion={{
-                    latitude: 37.78825,
-                    longitude: -122.4324,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
+                    latitude: 27.6648,
+                    longitude: -81.5158,
+                    latitudeDelta: 9.0,
+                    longitudeDelta: 9.0,
                   }}
           />
-          <View style={{flex: 2, backgroundColor: 'skyblue'}}
+          <View style={{flex: 2, backgroundColor: 'skyblue'}}>
 
-             />
+              <FlatList
+                data={this.state.childData}
+              renderItem={({item}) => <Text> {item.location.timestamp} {item.additionalDetails} {item.location.coords.latitude} {item.location.coords.longitude}</Text>}
+              //  JSON.stringify(item)
+        />
+          </View>
 
         </View>
-
         );
   }
 }

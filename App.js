@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Platform, AppRegistry, StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import { StackNavigator} from 'react-navigation';
-import { Constants, Location, Permissions } from 'expo';
+import { Constants, Location, Permissions, MapView } from 'expo';
  // 1.0.0-beta.11
 import * as firebase from 'firebase';
  // 4.3.1
@@ -24,48 +24,11 @@ class HomeScreen extends React.Component {
   static navigationOptions = {
     title: 'Welcome',
   }
-  state = {
-    location: null,
-    errorMessage: null,
-  };
-
-  componentWillMount() {
-    if (Platform.OS === 'android' && !Constants.isDevice) {
-      this.setState({
-        errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
-      });
-    } else {
-      this._getLocationAsync();
-    }
-  }
-
-
-  _getLocationAsync = async () => {
-  let { status } = await Permissions.askAsync(Permissions.LOCATION);
-  if (status !== 'granted') {
-    this.setState({
-      errorMessage: 'Permission to access location was denied',
-    });
-  }
-
-  let location = await Location.getCurrentPositionAsync({});
-this.setState({ location });
-};
 
   render() {
     const { navigate } = this.props.navigation;
-
-    let gps = 'Waiting..';
-        if (this.state.errorMessage) {
-          gps = this.state.errorMessage;
-        } else if (this.state.location) {
-          gps = JSON.stringify(this.state.location);
-          console.log(gps);
-        }
-
     return (
           <View>
-            <Text style={styles.paragraph}>{gps}</Text>
             <Button
               onPress={() => navigate('Offer')}
               title="Offer"
@@ -77,6 +40,10 @@ this.setState({ location });
             <Button
               onPress={() => navigate('Info')}
               title="Info"
+            />
+            <Button
+              onPress={() => navigate('RequestView')}
+              title="View Map"
             />
 
           </View>
@@ -202,6 +169,7 @@ class ShelterOfferScreen extends React.Component {
   constructor(props) {
     super(props);
 
+
     this.state = {
       type: 'crazy',
       address: '1043208 Danforth Dr ',
@@ -209,29 +177,61 @@ class ShelterOfferScreen extends React.Component {
       additionalDetails: 'dsfljsad;fladks',
       active: true,
       numberOfPeopleAffected: 0,
-      // gpsLatitude: this.state.location.coords.latitude,
-      // gpsLongitude: this.state.location.coords.longitude,
+      //gpsLatitude: this.state.location.coords.latitude,
+      //gpsLongitude: this.state.location.coords.longitude,
      }
   }
 
-  _handlePress() {
-    console.log(this.state.type);
-    console.log(this.state.timeRequested);
-  }
+  state = {
+    location: null,
+    errorMessage: null,
+  };
 
-    storeRequest = request => {
-      //                        name of the branch
-      firebase.database().ref('request' + int).set(
-        request
-      );
-      int = int + 1;
-    };
+  componentWillMount() {
+      if (Platform.OS === 'android' && !Constants.isDevice) {
+        this.setState({
+          errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+        });
+      } else {
+        this._getLocationAsync();
+      }
+    }
+
+    _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+   this.setState({ location });
+ };
+    // 
+    // async storeRequest = request => {
+    //   //retrieve the location
+    //   // add the location to the request object
+    //   //                        name of the branch
+    //   firebase.database().ref('request' + int).set(
+    //     request
+    //   );
+    //   int = int + 1;
+    //
+    // };
 
   render() {
     const { navigate } = this.props.navigation;
     const {goBack} = this.props.navigation;
+    let text = 'Waiting..';
+      if (this.state.errorMessage) {
+        text = this.state.errorMessage;
+      } else if (this.state.location) {
+        text = JSON.stringify(this.state.location);
+      }
     return (
           <View>
+            <Text style={styles.paragraph}>{text}</Text>
             <TextInput
               title="Type"
               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
@@ -593,6 +593,43 @@ class ShelterRequestScreen extends React.Component {
 //   }
 // }
 
+class RequestViewScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Requests',
+  };
+  // constructor(props) {
+  //   super(props);
+  //   this.state = { text: 'Placeholder' };
+  // }
+
+    // storeRequest = type => {
+    //   firebase.database().ref('request').set({
+    //     request: type
+    //   });
+    //   // int = int + 1;
+    // };
+
+  render() {
+    const { navigate } = this.props.navigation;
+    const { goBack } = this.props.navigation;
+    return (
+        <View style={{flex: 1}}>
+          <MapView
+                  style={{ flex: 5 }}
+                  initialRegion={{
+                    latitude: 37.78825,
+                    longitude: -122.4324,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                  }}
+          />
+          <View style={{flex: 2, backgroundColor: 'skyblue'}} />
+        </View>
+
+        );
+  }
+}
+
 export default StackNavigator({
   Home: { screen: HomeScreen },
   Offer: { screen: OfferScreen },
@@ -606,6 +643,7 @@ export default StackNavigator({
   // OfferAssistance: { screen: AssistanceOfferScreen },
   // OfferSupplies: { screen: SuppliesOfferScreen },
   // OfferRides: { screen: RidesOfferScreen }
+  RequestView: { screen: RequestViewScreen },
 
 });
 

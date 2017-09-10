@@ -1,10 +1,10 @@
-import React from 'react';
-import { AppRegistry, StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import React, { Component } from 'react';
+import { Platform, AppRegistry, StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import { StackNavigator} from 'react-navigation';
+import { Constants, Location, Permissions, MapView } from 'expo';
  // 1.0.0-beta.11
 import * as firebase from 'firebase';
  // 4.3.1
-
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -22,22 +22,9 @@ var int = 0;
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
-<<<<<<< HEAD
-    title: 'UniSupport',
-=======
     title: 'Welcome',
   }
 
-
-<<<<<<< HEAD
-        if(!firebase.apps.length){
-        firebase.initializeApp(firebaseConfig);
-        }
-    }
->>>>>>> refs/remotes/origin/master
-  };
-=======
->>>>>>> refs/remotes/origin/master
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -53,6 +40,10 @@ class HomeScreen extends React.Component {
             <Button
               onPress={() => navigate('Info')}
               title="Info"
+            />
+            <Button
+              onPress={() => navigate('RequestView')}
+              title="View Map"
             />
 
           </View>
@@ -163,23 +154,9 @@ class InfoScreen extends React.Component {
     return (
       <View>
         <Button
-<<<<<<< HEAD
-          title="Map"
-          onPress={this.storeRequest}
-        />
-          <Button
-          title="Updates"
-          onPress={this.storeRequest}
-        />
-          <Button
-          title="Last Minutes"
-          onPress={this.storeRequest}
-       />
-=======
               onPress={this.storeRequest}
               title="Submit"
             />
->>>>>>> refs/remotes/origin/master
       </View>
     );
   }
@@ -191,37 +168,96 @@ class ShelterOfferScreen extends React.Component {
   };
   constructor(props) {
     super(props);
-    this.state = { text: 'Placeholder' };
-    this.address = { text: 'Address' };
+
+
+    this.state = {
+      type: '',
+      address: '',
+      time:'',
+      additionalDetails: '',
+      active: true,
+      numberOfPeopleAffected: 0,
+      //gpsLatitude: this.state.location.coords.latitude,
+      //gpsLongitude: this.state.location.coords.longitude,
+     }
   }
 
-    storeRequest = type => {
-      firebase.database().ref('request' + int).set({
-        request: type
+  state = {
+    location: null,
+    errorMessage: null,
+  };
+
+  componentWillMount() {
+      if (Platform.OS === 'android' && !Constants.isDevice) {
+        this.setState({
+          errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+        });
+      }
+    }
+
+    _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
       });
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+   this.setState({ location });
+ };
+
+     storeRequest = async(request) => {
+      //retrieve the location
+      // add the location to the request object
+      //                        name of the branch
+      await this._getLocationAsync();
+      firebase.database().ref('request' + int).set(
+        this.state
+      );
       int = int + 1;
+
     };
 
   render() {
     const { navigate } = this.props.navigation;
     const {goBack} = this.props.navigation;
+    let text = 'Waiting..';
+      if (this.state.errorMessage) {
+        text = this.state.errorMessage;
+      } else if (this.state.location) {
+        text = JSON.stringify(this.state.location);
+      }
     return (
           <View>
+            <Text style={styles.paragraph}>{text}</Text>
             <TextInput
               title="Type"
               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
-              value={this.state.text}
+              onChangeText={(type) => this.setState({type})}
+              value={this.state.type}
             />
             <TextInput
               title="Address"
               style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => this.setState({text})}
+              onChangeText={(address) => this.setState({address})}
               value={this.state.address}
+            />
+            <TextInput
+              title="Additional Details"
+              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+              onChangeText={(additionalDetails) => this.setState({additionalDetails})}
+              value={this.state.additionalDetails}
+            />
+            <TextInput
+              title="Additional Details"
+              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+              onChangeText={(numberOfPeopleAffected) => this.setState({numberOfPeopleAffected})}
+              value={this.state.numberOfPeopleAffected}
             />
 
             <Button
-              onPress={() => this.storeRequest(this.state.text, this.state.address)}
+              onPress={() => this.storeRequest(this.state)}
               title="Submit"
             />
           </View>
@@ -556,6 +592,66 @@ class ShelterRequestScreen extends React.Component {
 //   }
 // }
 
+class RequestViewScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Requests',
+  };
+
+  componentWillMount() {
+    this.loadRequests();
+  }
+  // constructor(props) {
+  //   super(props);
+  //   this.state = { text: 'Placeholder' };
+  // }
+
+    // storeRequest = type => {
+    //   firebase.database().ref('request').set({
+    //     request: type
+    //   });
+    //   // int = int + 1;
+    // };
+    loadRequests() {
+      console.log("this is being called");
+      var leadsRef = firebase.database().ref('/');
+      leadsRef.on('value', function(snapshot) {
+        snapshot.forEach(function(childSnapshot) {
+          var childData = childSnapshot.val();
+          console.log(childData);
+      });
+    });
+    }
+
+    // await this._getLocationAsync();
+    // firebase.database().ref('request' + int).set(
+    //   this.state
+    // );
+    // int = int + 1;
+
+  render() {
+    const { navigate } = this.props.navigation;
+    const { goBack } = this.props.navigation;
+    return (
+        <View style={{flex: 1}}>
+          <MapView
+                  style={{ flex: 5 }}
+                  initialRegion={{
+                    latitude: 37.78825,
+                    longitude: -122.4324,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                  }}
+          />
+          <View style={{flex: 2, backgroundColor: 'skyblue'}}
+
+             />
+
+        </View>
+
+        );
+  }
+}
+
 export default StackNavigator({
   Home: { screen: HomeScreen },
   Offer: { screen: OfferScreen },
@@ -569,6 +665,7 @@ export default StackNavigator({
   // OfferAssistance: { screen: AssistanceOfferScreen },
   // OfferSupplies: { screen: SuppliesOfferScreen },
   // OfferRides: { screen: RidesOfferScreen }
+  RequestView: { screen: RequestViewScreen },
 
 });
 
@@ -576,8 +673,13 @@ export default StackNavigator({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  paragraph: {
+    margin: 24,
+    fontSize: 18,
+    textAlign: 'center',
   },
 });
